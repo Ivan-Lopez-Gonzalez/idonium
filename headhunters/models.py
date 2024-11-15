@@ -54,24 +54,24 @@ class ActionAgenda(models.Model):
         return f"Agenda of {self.headhunter.user.username} - {self.task} - {self.date}"
 
 # Model for Candidate Actions
-class CandidateActions(models.Model):
-    candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
-    action = models.CharField(max_length=255)
-    result = models.CharField(max_length=255)
-    date = models.DateTimeField()
+# class CandidateActions(models.Model):
+#     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
+#     action = models.CharField(max_length=255)
+#     result = models.CharField(max_length=255)
+#     date = models.DateTimeField()
     
-    def __str__(self):
-        return f"Action {self.action} for {self.candidate.name} - {self.date}"
+#     def __str__(self):
+#         return f"Action {self.action} for {self.candidate.name} - {self.date}"
 
 # Model for Job Offer Notification
-class JobOfferNotification(models.Model):
-    candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
-    job_offer = models.ForeignKey(JobOffer, on_delete=models.CASCADE)
-    sent_date = models.DateTimeField(auto_now_add=True)
-    read = models.BooleanField(default=False)
+# class JobOfferNotification(models.Model):
+#     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
+#     job_offer = models.ForeignKey(JobOffer, on_delete=models.CASCADE)
+#     sent_date = models.DateTimeField(auto_now_add=True)
+#     read = models.BooleanField(default=False)
     
-    def __str__(self):
-        return f"Notification for {self.job_offer.title} to {self.candidate.name}"
+#     def __str__(self):
+#         return f"Notification for {self.job_offer.title} to {self.candidate.name}"
 
 # Model for Saved Search
 class SavedSearch(models.Model):

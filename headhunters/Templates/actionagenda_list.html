@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Agenda de Acciones</h1>
+<a href="{% url 'actionagenda_create' %}">Nueva Acción</a>
+<ul>
+    {% for action in action_agendas %}
+        <li>
+            <strong>{{ action.task }}</strong> - {{ action.status }}
+            <a href="{% url 'actionagenda_update' action.pk %}">Editar</a>
+            <a href="{% url 'actionagenda_delete' action.pk %}">Eliminar</a>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>
