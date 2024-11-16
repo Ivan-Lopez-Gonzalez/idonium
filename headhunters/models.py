@@ -1,94 +1,124 @@
-
-
-# Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
 
-# Model for HeadHunter (using custom authentication)
+# Model for HeadHunter
+# HeadHunter: Este modelo representa a los reclutadores (headhunters) registrados en la plataforma. Cada HeadHunter está vinculado a un usuario (User) de Django mediante una relación uno a uno, lo que permite que el User maneje las credenciales de inicio de sesión mientras HeadHunter almacena información adicional como la compañía, el cargo y los enlaces de contacto profesional.
 class HeadHunter(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='headhunter')
     company = models.CharField(max_length=255)
-    permissions = models.JSONField(default=dict)  # Stores specific permissions for the HeadHunter
-    
-    def __str__(self):
-        return f"{self.user.username} - {self.company}"
+    phone = models.CharField(max_length=20)
+    position = models.CharField(max_length=100, help_text="Position within the company")
+    website = models.URLField(blank=True, null=True, help_text="Company website URL")
+    linkedin_profile = models.URLField(blank=True, null=True, help_text="LinkedIn profile URL")
+    city = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-
-# Model for Search Filter
-class SearchFilter(models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
-    skills = models.JSONField()  # Skills to filter by
-    experience = models.CharField(max_length=100)
-    language_level = models.CharField(max_length=50)
-    sector = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    availability = models.CharField(max_length=100)
-    vehicle = models.BooleanField(default=False)
-    disability = models.BooleanField(default=False)
-    search_date = models.DateTimeField(auto_now_add=True)
-    
     def __str__(self):
-        return f"Search by {self.headhunter.user.username} - {self.search_date}"
+        return f"{self.user.username} - {self.company} ({self.position})"
+
+# Model for Candidate Status (Auxiliary table for Candidate)
+#StatusCandidate: Un modelo auxiliar que define posibles estados para los candidatos, como "En proceso", "Contratado", o "Descartado". Estos estados se asignan a los candidatos en el modelo CandidateProfile para reflejar su situación general.
+class StatusCandidate(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+# Model for Candidate
+#Este esta a modo de ejemplo ESTE DEBERIA VENIR DEL PROFILE DEL GRUPO DE CVS SI NO ENTIENDO MAL 
+class CandidateProfile(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20)
+    skills = models.TextField(help_text="List of skills or areas of expertise")
+    experience_years = models.PositiveIntegerField(help_text="Years of experience")
+    status = models.ForeignKey(StatusCandidate, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name
 
 # Model for Job Offer
+#JobOffer: Almacena la información de una oferta de trabajo creada por un HeadHunter, incluyendo el título, descripción y requisitos de la oferta. Cada oferta está relacionada con un HeadHunter específico.
 class JobOffer(models.Model):
     headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
     requirements = models.TextField()
     publish_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50, choices=[('open', 'Open'), ('closed', 'Closed')])
-    
+
     def __str__(self):
         return self.title
 
-# Model for Action Agenda
-class ActionAgenda(models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
-    date = models.DateTimeField()
-    task = models.CharField(max_length=255)
-    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')])
-    comments = models.TextField(null=True, blank=True)
-    
-    def __str__(self):
-        return f"Agenda of {self.headhunter.user.username} - {self.task} - {self.date}"
+# Model for Management of Candidates in Job Offers
 
-# Model for Candidate Actions
-class CandidateActions(models.Model):
+# ManagementCandidates: Este modelo gestiona la relación entre un CandidateProfile y una JobOffer, permitiendo que cada oferta tenga múltiples candidatos asociados. Los campos is_selected_by_headhunter y applied_directly permiten identificar si un candidato fue seleccionado por el headhunter o si aplicó a la oferta por cuenta propia. Además, este modelo incluye un campo status para registrar el estado de ese candidato en la oferta específica, lo que puede diferir del estado general del candidato.
+
+class ManagementCandidates(models.Model):
+    job_offer = models.ForeignKey(JobOffer, on_delete=models.CASCADE)
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
-    action = models.CharField(max_length=255)
-    result = models.CharField(max_length=255)
-    date = models.DateTimeField()
-    
+    is_selected_by_headhunter = models.BooleanField(
+        default=False,
+        help_text="Indicates if the candidate was selected directly by the headhunter"
+    )
+    applied_directly = models.BooleanField(
+        default=False,
+        help_text="Indicates if the candidate applied to the job offer by themselves"
+    )
+    status = models.ForeignKey(StatusCandidate, on_delete=models.SET_NULL, null=True)
+    application_date = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
-        return f"Action {self.action} for {self.candidate.name} - {self.date}"
+        selected_or_applied = "Selected" if self.is_selected_by_headhunter else "Applied Directly"
+        return f"{self.candidate.name} - {self.job_offer.title} ({selected_or_applied})"
+
+# Model for Status Action (Auxiliary table for Action)
+#StatusAction: Define los posibles estados para las acciones realizadas por el headhunter en relación con un candidato (por ejemplo, "Enviado", "En proceso", "Finalizado"). Este modelo auxiliar proporciona opciones de estado para el modelo Action.
+class StatusAction(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+# Model for Type of Action
+#Tabla Auxiliar de Action
+class TypeAction(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+# Model for Actions taken by the headhunter on candidates
+#Action: Almacena las acciones o interacciones realizadas por el headhunter con un candidato, como enviar un mensaje, realizar una videoconferencia o enviar un email. Cada Action está relacionada con un HeadHunter y un CandidateProfile y tiene un tipo de acción (type_action), una descripción y una fecha.
+class Action(models.Model):
+    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
+    type_action = models.ForeignKey(TypeAction, on_delete=models.SET_NULL, null=True)
+    description = models.TextField()
+    date = models.DateTimeField()
+    status = models.ForeignKey(StatusAction, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.type_action.name} with {self.candidate.name} - {self.date}"
+
+# Model for Agenda
+#Agenda: Permite al headhunter registrar eventos o citas con un candidato específico. Cada entrada en la agenda incluye al headhunter, el candidato y la fecha del evento.
+class Agenda(models.Model):
+    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+
+    def __str__(self):
+        return f"Agenda for {self.headhunter.user.username} with {self.candidate.name} on {self.date}"
 
 # Model for Job Offer Notification
+#JobOfferNotification: Registra notificaciones enviadas a los candidatos sobre una oferta de trabajo, incluyendo la fecha en que se envió y si el candidato ha leído la notificación o no. Esto es útil para mantener informados a los candidatos sobre el progreso de sus aplicaciones.
 class JobOfferNotification(models.Model):
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
     job_offer = models.ForeignKey(JobOffer, on_delete=models.CASCADE)
     sent_date = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
-    
+
     def __str__(self):
         return f"Notification for {self.job_offer.title} to {self.candidate.name}"
-
-# Model for Saved Search
-class SavedSearch(models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
-    filter = models.ForeignKey(SearchFilter, on_delete=models.CASCADE)
-    saved_date = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"Saved search by {self.headhunter.user.username} - {self.saved_date}"
-
-# Model for Virtual Assistant Follow-up
-class VirtualAssistant(models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
-    task = models.CharField(max_length=255)
-    scheduled_date = models.DateTimeField()
-    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')])
-    
-    def __str__(self):
-        return f"Assistant of {self.headhunter.user.username} - {self.task}"
-
