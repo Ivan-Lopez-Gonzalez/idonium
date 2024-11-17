@@ -5,7 +5,7 @@
   <ul>
     {% for headhunter in headhunters %}
       <li>
-        <a href="{% url 'headhunter_detail' pk=headhunter.pk %}">{{ headhunter.name }}</a>
+        <a href="{% url 'headhunter_detail' pk=headhunter.pk %}">{{ headhunter.company }}</a>
       </li>
     {% endfor %}
   </ul>
