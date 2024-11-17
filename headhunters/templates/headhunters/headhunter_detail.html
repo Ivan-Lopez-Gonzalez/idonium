@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ headhunter.name }}</h1>
+  <p>{{ headhunter.description }}</p>
+  
+  <a href="{% url 'headhunter_edit' pk=headhunter.pk %}">Edit</a>
+  
+  <form method="post" action="{% url 'headhunter_delete' pk=headhunter.pk %}">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+  </form>
+  
+  <a href="{% url 'headhunter_list' %}">Back to list</a>
+{% endblock %}
