@@ -16,11 +16,6 @@
         <li><a href="{% url 'schedule_list' %}">My Agenda</a></li>
         <li><a href="{% url 'candidate_list' %}">Candidates</a></li>
         <li><a href="{% url 'joboffer_list' %}">Job Offers</a></li>
-        {% if user.is_authenticated %}
-          <li><a href="{% url 'logout' %}">Logout</a></li>
-        {% else %}
-          <li><a href="{% url 'login' %}">Login</a></li>
-        {% endif %}
       </ul>
     </nav>
   </header>
