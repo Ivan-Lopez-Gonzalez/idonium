@@ -21,8 +21,8 @@ class HeadHunter(models.Model):
 # Model for Candidate Status (Auxiliary table for Candidate)
 #StatusCandidate: Un modelo auxiliar que define posibles estados para los candidatos, como "En proceso", "Contratado", o "Descartado". Estos estados se asignan a los candidatos en el modelo CandidateProfile para reflejar su situación general.
 class StatusCandidate(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
+    status = (("P","En proceso"),("C","Contratado"),("D","Descartado"))
+    name = models.CharField(max_length=50, choices=status, unique=True)
     def __str__(self):
         return self.name
 
@@ -76,7 +76,8 @@ class ManagementCandidates(models.Model):
 # Model for Status Action (Auxiliary table for Action)
 #StatusAction: Define los posibles estados para las acciones realizadas por el headhunter en relación con un candidato (por ejemplo, "Enviado", "En proceso", "Finalizado"). Este modelo auxiliar proporciona opciones de estado para el modelo Action.
 class StatusAction(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    status = (("E","Enviado"),("P","En proceso"),("F","Finalizado"))
+    name = models.CharField(max_length=50, choices=status, unique=True)
 
     def __str__(self):
         return self.name
@@ -84,6 +85,7 @@ class StatusAction(models.Model):
 # Model for Type of Action
 #Tabla Auxiliar de Action
 class TypeAction(models.Model):
+    predfined_actions = (("E","Email"),("CH","Chat"),("CO","Contratado"),("D","Descartado"))
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
