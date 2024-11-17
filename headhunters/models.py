@@ -102,15 +102,15 @@ class Action(models.Model):
     def __str__(self):
         return f"{self.type_action.name} with {self.candidate.name} - {self.date}"
 
-# Model for Agenda
-#Agenda: Permite al headhunter registrar eventos o citas con un candidato específico. Cada entrada en la agenda incluye al headhunter, el candidato y la fecha del evento.
-class Agenda(models.Model):
+# Model for Calendar
+#Schedule : Permite al headhunter registrar eventos o citas con un candidato específico. Cada entrada en la agenda incluye al headhunter, el candidato y la fecha del evento.
+class Schedule (models.Model):
     headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
     def __str__(self):
-        return f"Agenda for {self.headhunter.user.username} with {self.candidate.name} on {self.date}"
+        return f"Schedule  for {self.headhunter.user.username} with {self.candidate.name} on {self.date}"
 
 # Model for Job Offer Notification
 #JobOfferNotification: Registra notificaciones enviadas a los candidatos sobre una oferta de trabajo, incluyendo la fecha en que se envió y si el candidato ha leído la notificación o no. Esto es útil para mantener informados a los candidatos sobre el progreso de sus aplicaciones.
