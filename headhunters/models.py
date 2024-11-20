@@ -12,6 +12,12 @@ class HeadHunter(models.Model):
     linkedin_profile = models.URLField(blank=True, null=True, help_text="LinkedIn profile URL")
     city = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
+    profile_photo = models.ImageField(
+        upload_to='profile_photos/',
+        blank=True,
+        null=True,
+        help_text="Upload a profile photo"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -97,6 +103,7 @@ class Action(models.Model):
     type_action = models.ForeignKey(TypeAction, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey(StatusAction, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -104,6 +111,10 @@ class Action(models.Model):
 
 # Model for Calendar
 #Schedule : Permite al headhunter registrar eventos o citas con un candidato específico. Cada entrada en la agenda incluye al headhunter, el candidato y la fecha del evento.
+
+
+
+#Volar
 class Schedule (models.Model):
     headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
