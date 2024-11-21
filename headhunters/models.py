@@ -18,8 +18,8 @@ class HeadHunter(models.Model):
         null=True,
         help_text="Upload a profile photo"
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.company} ({self.position})"
@@ -103,8 +103,9 @@ class Action(models.Model):
     type_action = models.ForeignKey(TypeAction, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     date = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null = True)
     status = models.ForeignKey(StatusAction, on_delete=models.SET_NULL, null=True)
+
 
     def __str__(self):
         return f"{self.type_action.name} with {self.candidate.name} - {self.date}"
