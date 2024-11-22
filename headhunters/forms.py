@@ -1,5 +1,5 @@
 from django import forms
-from .models import HeadHunter, CandidateProfile, JobOffer, ManagementCandidates, Action, Schedule, JobOfferNotification
+from .models import HeadHunter, CandidateProfile, JobOffer, ManagementCandidates, Schedule, JobOfferNotification
 
 class HeadHunterForm(forms.ModelForm):
     class Meta:
@@ -21,15 +21,11 @@ class ManagementCandidatesForm(forms.ModelForm):
         model = ManagementCandidates
         fields = '__all__'
 
-class ActionForm(forms.ModelForm):
-    class Meta:
-        model = Action
-        fields = '__all__'
-
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
         fields = '__all__'
+
 
 class JobOfferNotificationForm(forms.ModelForm):
     class Meta:
