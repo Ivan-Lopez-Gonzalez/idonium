@@ -1,9 +1,9 @@
 from django import forms
-from .models import HeadHunter, CandidateProfile, JobOffer, ManagementCandidates, Action, Schedule, JobOfferNotification
+from .models import HeadHunterUser, CandidateProfile, JobOffer, ManagementCandidates, Action, Schedule, JobOfferNotification
 
 class HeadHunterForm(forms.ModelForm):
     class Meta:
-        model = HeadHunter
+        model = HeadHunterUser
         fields = '__all__'
 
 class CandidateProfileForm(forms.ModelForm):

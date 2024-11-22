@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Model for HeadHunter
-# HeadHunter: Este modelo representa a los reclutadores (headhunters) registrados en la plataforma. Cada HeadHunter está vinculado a un usuario (User) de Django mediante una relación uno a uno, lo que permite que el User maneje las credenciales de inicio de sesión mientras HeadHunter almacena información adicional como la compañía, el cargo y los enlaces de contacto profesional.
-class HeadHunter(models.Model):
+# Model for HeadHunterUser
+# HeadHunterUser: Este modelo representa a los reclutadores (headhunters) registrados en la plataforma. Cada HeadHunter está vinculado a un usuario (User) de Django mediante una relación uno a uno, lo que permite que el User maneje las credenciales de inicio de sesión mientras HeadHunter almacena información adicional como la compañía, el cargo y los enlaces de contacto profesional.
+class HeadHunterUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='headhunter')
     company = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
@@ -48,11 +48,12 @@ class CandidateProfile(models.Model):
 # Model for Job Offer
 #JobOffer: Almacena la información de una oferta de trabajo creada por un HeadHunter, incluyendo el título, descripción y requisitos de la oferta. Cada oferta está relacionada con un HeadHunter específico.
 class JobOffer(models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
+    headhunter = models.ForeignKey(HeadHunterUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
     requirements = models.TextField()
     publish_date = models.DateTimeField(auto_now_add=True)
+    #Candidate
 
     def __str__(self):
         return self.title
@@ -98,7 +99,7 @@ class TypeAction(models.Model):
 # Model for Actions taken by the headhunter on candidates
 #Action: Almacena las acciones o interacciones realizadas por el headhunter con un candidato, como enviar un mensaje, realizar una videoconferencia o enviar un email. Cada Action está relacionada con un HeadHunter y un CandidateProfile y tiene un tipo de acción (type_action), una descripción y una fecha.
 class Action(models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
+    headhunter = models.ForeignKey(HeadHunterUser, on_delete=models.CASCADE)
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
     type_action = models.ForeignKey(TypeAction, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
@@ -117,7 +118,7 @@ class Action(models.Model):
 
 #Volar
 class Schedule (models.Model):
-    headhunter = models.ForeignKey(HeadHunter, on_delete=models.CASCADE)
+    headhunter = models.ForeignKey(HeadHunterUser, on_delete=models.CASCADE)
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
