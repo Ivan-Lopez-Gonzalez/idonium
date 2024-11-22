@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "headhunters",
-    'django_extensions',
+    "profile_cv",
 ]
 
 MIDDLEWARE = [
