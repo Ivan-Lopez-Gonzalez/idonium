@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class ScheduleListView(ListView):
     model = Schedule
     template_name = 'schedule/schedule_list.html'
-    context_object_name = 'schedule_list'
+    context_object_name = 'schedule'
 
 # Vista para ver detalles de un evento de la agenda
 class ScheduleDetailView(DetailView):
