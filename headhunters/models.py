@@ -86,7 +86,7 @@ class TypeAction(models.Model):
         return self.name
 
 # Model for Actions taken by the headhunter on candidates
-#Action: Almacena las acciones o interacciones realizadas por el headhunter con un candidato, como enviar un mensaje, realizar una videoconferencia o enviar un email. Cada Action está relacionada con un HeadHunter y un Profile_CV y tiene un tipo de acción (type_action), una descripción y una fecha.
+#Action: Almacena las acciones o interacciones realizadas por el headhunter con un candidato, como enviar un mensaje, realizar una videoconferencia o enviar un email. Cada Action está relacionada con un HeadHunter y un CandidateProfile y tiene un tipo de acción (type_action), una descripción y una fecha.
 class Action(models.Model):
     headhunter = models.ForeignKey(HeadHunterUser, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Profile_CV, on_delete=models.CASCADE)
