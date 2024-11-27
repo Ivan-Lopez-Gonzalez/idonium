@@ -1,8 +1,6 @@
 from django import forms
-
 from profile_cv.models import Profile_CV
-from .models import HeadHunterUser, JobOffer, ManagementCandidates, Action, Schedule, JobOfferNotification
-
+from .models import HeadHunterUser, JobOffer, ManagementCandidates, Schedule, JobOfferNotification
 class HeadHunterForm(forms.ModelForm):
     class Meta:
         model = HeadHunterUser
@@ -23,15 +21,11 @@ class ManagementCandidatesForm(forms.ModelForm):
         model = ManagementCandidates
         fields = '__all__'
 
-class ActionForm(forms.ModelForm):
-    class Meta:
-        model = Action
-        fields = '__all__'
-
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
         fields = '__all__'
+
 
 class JobOfferNotificationForm(forms.ModelForm):
     class Meta:

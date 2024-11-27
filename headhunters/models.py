@@ -86,8 +86,8 @@ class TypeAction(models.Model):
         return self.name
 
 # Model for Actions taken by the headhunter on candidates
-#Action: Almacena las acciones o interacciones realizadas por el headhunter con un candidato, como enviar un mensaje, realizar una videoconferencia o enviar un email. Cada Action está relacionada con un HeadHunter y un Profile_CV y tiene un tipo de acción (type_action), una descripción y una fecha.
-class Action(models.Model):
+#Action: Almacena las acciones o interacciones realizadas por el headhunter con un candidato, como enviar un mensaje, realizar una videoconferencia o enviar un email. Cada Action está relacionada con un HeadHunter y un CandidateProfile y tiene un tipo de acción (type_action), una descripción y una fecha.
+class Schedule(models.Model):
     headhunter = models.ForeignKey(HeadHunterUser, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Profile_CV, on_delete=models.CASCADE)
     type_action = models.ForeignKey(TypeAction, on_delete=models.SET_NULL, null=True)
@@ -99,20 +99,6 @@ class Action(models.Model):
 
     def __str__(self):
         return f"{self.type_action.name} with {self.candidate.name} - {self.date}"
-
-# Model for Calendar
-#Schedule : Permite al headhunter registrar eventos o citas con un candidato específico. Cada entrada en la agenda incluye al headhunter, el candidato y la fecha del evento.
-
-
-
-#Volar
-class Schedule (models.Model):
-    headhunter = models.ForeignKey(HeadHunterUser, on_delete=models.CASCADE)
-    candidate = models.ForeignKey(Profile_CV, on_delete=models.CASCADE)
-    date = models.DateTimeField()
-
-    def __str__(self):
-        return f"Schedule  for {self.headhunter.user.username} with {self.candidate.name} on {self.date}"
 
 # Model for Job Offer Notification
 #JobOfferNotification: Registra notificaciones enviadas a los candidatos sobre una oferta de trabajo, incluyendo la fecha en que se envió y si el candidato ha leído la notificación o no. Esto es útil para mantener informados a los candidatos sobre el progreso de sus aplicaciones.
